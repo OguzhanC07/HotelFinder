@@ -1,58 +1,56 @@
 ﻿using HotelFinder.DataAccess.Abstract;
 using HotelFinder.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace HotelFinder.DataAccess.Concrete
 {
     public class HotelRepository : IHotelRepository
     {
-        public Hotel CreateHotel(Hotel hotel)
+        public async Task<Hotel> CreateHotel(Hotel hotel)
         {
-            using(var hotelDbContext=new HotelDbContext())
-            {
-                hotelDbContext.Hotels.Add(hotel);
-                hotelDbContext.SaveChanges();
-                return hotel;
-            }
+            using var hotelDbContext = new HotelDbContext();
+            hotelDbContext.Hotels.Add(hotel);
+            await hotelDbContext.SaveChangesAsync();
+            return hotel;
         }
 
-        public void DeleteHotel(int id)
+        public async Task DeleteHotel(int id)
         {
-           using(var hotelDbContext=new HotelDbContext())
-            {
-                var deletedHotel = GetHotelById(id);
-                hotelDbContext.Hotels.Remove(deletedHotel);
-                hotelDbContext.SaveChanges();
-            }
+            using var hotelDbContext = new HotelDbContext();
+            var deletedHotel = await GetHotelById(id);
+            hotelDbContext.Hotels.Remove(deletedHotel);
+            await hotelDbContext.SaveChangesAsync();
         }
 
-        public List<Hotel> GetAllHotels()
+        public async Task<List<Hotel>> GetAllHotels()
         {
-            using(var hotelDbContext= new HotelDbContext())
-            {
-                return hotelDbContext.Hotels.ToList();
-            }
+            using var hotelDbContext = new HotelDbContext();
+            return await hotelDbContext.Hotels.ToListAsync();
         }
 
-        public Hotel GetHotelById(int id)
+        public async Task<Hotel> GetHotelById(int id)
         {
-            using(var hotelDbContext= new HotelDbContext())
-            {
-                return hotelDbContext.Hotels.Find(id);
-            }
+            using var hotelDbContext = new HotelDbContext();
+            return await hotelDbContext.Hotels.FindAsync(id);
         }
 
-        public Hotel UpdateHotel(Hotel hotel)
+        public async Task<Hotel> GetHotelByName(string name)
         {
-            using (var hotelDbContext=new HotelDbContext())
-            {
-                hotelDbContext.Hotels.Update(hotel);
-                hotelDbContext.SaveChanges();
-                return hotel;
-            }
+            using var hotelDbContext = new HotelDbContext();
+            return await hotelDbContext.Hotels.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
+
+        public async Task<Hotel> UpdateHotel(Hotel hotel)
+        {
+            using var hotelDbContext = new HotelDbContext();
+            hotelDbContext.Hotels.Update(hotel);
+            await hotelDbContext.SaveChangesAsync();
+            return hotel;
         }
     }
 }

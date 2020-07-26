@@ -2,16 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace HotelFinder.Business.Abstract
 {
     public interface IHotelService
     {
-        List<Hotel> GetAllHotels();
-        Hotel GetHotelById(int id);
-        Hotel CreateHotel(Hotel hotel);
-        Hotel UpdateHotel(Hotel hotel);
-        void DeleteHotel(int id);
+        Task<List<Hotel>> GetAllHotels();
+        Task<Hotel> GetHotelById(int id);
+        Task<Hotel> GetHotelByName(string name);
+        Task<Hotel> CreateHotel(Hotel hotel);
+        Task<Hotel> UpdateHotel(Hotel hotel);
+        Task DeleteHotel(int id);
 
     }
 }
